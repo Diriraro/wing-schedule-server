@@ -32,3 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 logs/portalms-log.log
+src/main/resources/application-env.yml
