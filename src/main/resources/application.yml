@@ -1,0 +1,20 @@
+#common
+
+server:
+  port: 19490
+  
+spring:  application:    name: wing-schedule-server
+  profiles:
+    include:
+    - env
+    
+usage:
+  application: thread
+    
+logging:
+  level:
+    org.springframework.cloud.config: error
+    org.springframework.web: error
+    ROOT: error
+
+spring.main.allow-bean-definition-overriding: true

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<property name="LOGS_DIR" value="./logs" />
+    <property name="LOGS_FILE_NAME" value="portalms-log.log" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout	class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+		</layout>
+	</appender>
+	
+	<appender name="FILEAPPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<file>${LOGS_DIR}/${LOGS_FILE_NAME}</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5level] %logger{36} - %msg%n</Pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+        	<!-- fileNamePattern기준으로 rollover함 분단위 시간단위 일단위-->
+        	<fileNamePattern>${LOGS_DIR}/${LOGS_FILE_NAME}_%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+        	<maxFileSize>1000MB</maxFileSize>
+        </rollingPolicy>
+        
+	</appender>
+	
+	<logger name="org.springframework.web" level="debug"/>
+    <logger name="org.hibernate.SQL" level="debug"/>
+    <logger name="org.h2.server.web" level="debug"/>
+    <logger name="org.apache.kafka" level="error"/>
+	
+	<root level="debug">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILEAPPENDER" />
+	</root>
+</configuration>
