@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.qos.logback.classic.Logger;
+import co.diro.wing.common.service.JwtService;
 import co.diro.wing.user.service.UserService;
 import co.diro.wing.user.vo.UserVo;
 
@@ -23,6 +24,9 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private JwtService jwtservice;
 	
 	/**
 	 * 가입 전 길드원 확인 체크 
@@ -37,7 +41,7 @@ public class UserController {
 	 * 회원가입 
 	 * @return
 	 */
-	@PostMapping("/wingService/wingUser")
+	@PostMapping("/wingService/wingUserCreate")
 	public Object joinWingUser(UserVo userVo, HttpServletRequest request) {
 		return userService.joinWingUser(userVo, request);
 	}

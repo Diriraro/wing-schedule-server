@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.diro.wing.user.mapper.UserMapper">
+	
+	<select id="selectCheckWingUser" resultType="userVo">
+		SELECT /*+ SQL_ID: co.diro.wing.user.mapper.UserMapper.selectCheckWingUser */
+		       p1.nickname
+		     , p1.pre_join_ck
+		  FROM wing.ws_pre_member p1
+		 WHERE 1=1
+		   AND p1.nickname = #{nickname}
+	</select>
+	
+	<insert id="insertWingUser">
+		INSERT /*+ SQL_ID: co.diro.wing.user.mapper.UserMapper.insertWingUser */
+		  INTO wing.ws_user_tb
+		(
+			   user_id_pk
+			 , password
+			 , nickname
+			 , email
+			 , char_class
+			 , role
+		)
+		VALUES
+		(
+			   #{userIdPk}
+			 , #{password}
+			 , #{nickname}
+			 , #{email}
+			 , #{charClass}
+			 , #{role}
+		)
+	</insert>
+	
+	
+</mapper>
