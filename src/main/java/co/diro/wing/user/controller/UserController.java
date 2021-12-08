@@ -32,7 +32,7 @@ public class UserController {
 	 * 가입 전 길드원 확인 체크 
 	 * @return
 	 */
-	@GetMapping("/wingService/checkWingUser")
+	@GetMapping("/wingService/wingUserCheck")
 	public Object checkWingUser(HttpServletRequest request, UserVo userVo, @RequestParam HashMap<String, String> params) {
 		return userService.checkWingUser(userVo, params);
 	}
@@ -46,6 +46,9 @@ public class UserController {
 		return userService.joinWingUser(userVo, request);
 	}
 	
-	
+	@PostMapping("/wingService/wingUserLogin")
+	public Object loginWingUser(UserVo userVo, HttpServletRequest request) {
+		return userService.loginWingUser(userVo, request);
+	}
 	
 }

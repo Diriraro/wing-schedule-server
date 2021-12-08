@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -22,7 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service("jwtService")
 public class JwtServiceImpl implements JwtService {
 
-	private static final String SALT =  "luvookSecret";
+	@Value("${jwt.secret}")
+    private String SALT;
     
     @Override
     public <T> String create(String key, T data, String subject){
@@ -77,9 +79,8 @@ public class JwtServiceImpl implements JwtService {
 	}
 
 	@Override
-	public long getMemberId() {
-        Integer memberId = (Integer) this.get("member").get("id");
-		return new Long(memberId);
+	public int getMemberId() {
+		return (Integer) this.get("member").get("id");
 	}
 
 	@Override

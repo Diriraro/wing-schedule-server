@@ -6,7 +6,7 @@
 		SELECT /*+ SQL_ID: co.diro.wing.user.mapper.UserMapper.selectCheckWingUser */
 		       p1.nickname
 		     , p1.pre_join_ck
-		  FROM wing.ws_pre_member p1
+		  FROM wing.ws_pre_member_tb p1
 		 WHERE 1=1
 		   AND p1.nickname = #{nickname}
 	</select>
@@ -33,5 +33,18 @@
 		)
 	</insert>
 	
+	<select id="selectWingUser" resultType="userVo" parameterType="userVo">
+		SELECT /*+ SQL_ID: co.diro.wing.user.mapper.UserMapper.selectWingUser */
+		       user_id_pk
+			 , password
+			 , nickname
+			 , email
+			 , char_class
+			 , role
+		  FROM wing.ws_user_tb u1
+		 WHERE 1=1
+		   AND user_id_pk = #{userIdPk}
+		   AND password = #{password}
+	</select>
 	
 </mapper>

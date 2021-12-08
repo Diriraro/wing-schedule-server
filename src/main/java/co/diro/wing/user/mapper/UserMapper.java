@@ -12,4 +12,6 @@ public interface UserMapper {
 	public UserVo selectCheckWingUser(UserVo userVo);
 	
 	public int insertWingUser(UserVo userVo);
+	
+	public UserVo selectWingUser(UserVo userVo);
 }

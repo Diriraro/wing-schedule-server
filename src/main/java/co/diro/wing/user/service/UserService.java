@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ch.qos.logback.classic.Logger;
 import co.diro.wing.common.component.CommonComponent;
 import co.diro.wing.common.exception.GlobalException;
+import co.diro.wing.common.service.JwtService;
 import co.diro.wing.common.util.StringUtil;
 import co.diro.wing.user.mapper.UserMapper;
 import co.diro.wing.user.vo.UserVo;
@@ -31,6 +32,9 @@ public class UserService extends CommonComponent{
 	
 	@Autowired
 	private UserMapper userMapper;
+	
+	@Autowired
+	private JwtService jwtService;
 	
 	@Transactional
 	public Object checkWingUser(UserVo userVo, HashMap<String, String> params) {
@@ -71,7 +75,36 @@ public class UserService extends CommonComponent{
 		return makeResponseEntity(resMap, HttpStatus.CREATED);
 	}
 	
+	@Transactional
+	public Object loginWingUser(UserVo userVo, HttpServletRequest request) {
+		HttpHeaders headers = new HttpHeaders();
+		logger("[로그인] 서비스 시작");
+		Map<String, Object> resMap = new HashMap<>();
+		
+		try {
+			logger("[로그인] 회원 확인");
+			userVo = userMapper.selectWingUser(userVo);
+			if(userVo.getUserIdPk() != null || userVo.getNickname() != null ) {
+				
+				UserVo loginUsers = userVo;
+				String token = jwtService.create("member", loginUsers, "user");
+				headers.add("Authorization", token);
+				
+			}else {
+				logger("[로그인] 아이디나 비번이 틀림");
+				throw new GlobalException();
+			}
+		} catch (Exception e) {
+			logger("[로그인] 실패/오류");
+			throw new GlobalException();
+		}
+		
+		return makeResponseEntity2(resMap, headers, HttpStatus.CREATED);
+	}
 	
+	public ResponseEntity<Object> makeResponseEntity2(Object obj, HttpHeaders headers, HttpStatus status){
+		return new ResponseEntity<Object>(obj, headers, status); 
+	}
 	
 	public ResponseEntity<Object> makeResponseEntity(Object obj, HttpStatus status){
 		HttpHeaders headers = new HttpHeaders();
