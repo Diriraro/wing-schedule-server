@@ -4,11 +4,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import co.diro.wing.common.exception.GlobalException;
 import co.diro.wing.common.service.JwtService;
 
+@Component
 public class JwtInterceptor implements HandlerInterceptor {
 	
 	private static final String HEADER_AUTH = "Authorization";
@@ -25,10 +27,10 @@ public class JwtInterceptor implements HandlerInterceptor {
 		if(token != null && jwtService.isUsable(token)) {
 			return true;
 		}else {
-			throw new GlobalException();
+//			throw new GlobalException();
 		}
 		
-//		return HandlerInterceptor.super.preHandle(request, response, handler);
+		return HandlerInterceptor.super.preHandle(request, response, handler);
 	}
 
 }

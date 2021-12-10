@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Alias("userVo")
-public class UserVo extends CommonVo{
+public class UserVo{
 
 	private String userIdPk;
 	private String password;

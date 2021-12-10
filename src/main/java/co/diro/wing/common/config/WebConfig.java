@@ -11,8 +11,9 @@ import co.diro.wing.common.interceptor.JwtInterceptor;
 public class WebConfig implements WebMvcConfigurer {
 	private static final String[] EXCLUDE_PATHS = {
 		"/",
-		"/wingService/checkWingUser",
-		"/wingService/wingUserCreate"
+		"/wingService/wingUserCheck",
+		"/wingService/wingUserCreate",
+		"/wingService/wingUserLogin"
 	};
 	
 	@Autowired

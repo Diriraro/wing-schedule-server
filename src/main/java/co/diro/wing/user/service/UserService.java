@@ -43,16 +43,28 @@ public class UserService extends CommonComponent{
 		
 		if(userVo.getNickname() != null) {
 			try {
+
 				userVo = userMapper.selectCheckWingUser(userVo);
+				if(!userVo.getPreJoinCk()) {
+					resMap.put("isCheck", userVo.getPreJoinCk());
+					resMap.put("message", "가입 가능합니다.");
+				}else {
+					resMap.put("isCheck", userVo.getPreJoinCk());
+					resMap.put("message", "이미 가입이 되어있습니다.");
+				}
+				logger("[가입체크] 체크완료");
+				
 			} catch (Exception e) {
+				
 				logger("[가입체크] 실패/오류");
-				throw new GlobalException();
+				throw new GlobalException(e);
+				
 			}
 		}else {
 			logger("[가입체크] 실패/오류 - 아이디 입력 없음");
 			throw new GlobalException();
 		}
-		
+		logger("[가입체크] 서비스 종료");
 		return makeResponseEntity(resMap, HttpStatus.OK);
 	}
 	
@@ -67,11 +79,13 @@ public class UserService extends CommonComponent{
 		try {
 			logger("[회원가입] 회원 등록");
 			userMapper.insertWingUser(userVo);
+			logger("[회원가입] 가입 성공 - pre_user 가입 체크");
+			userMapper.updateCheckWingUser(userVo);
 		} catch (Exception e) {
 			logger("[회원가입] 실패/오류");
 			throw new GlobalException();
 		}
-		
+		logger("[회원가입] 서비스 종료");
 		return makeResponseEntity(resMap, HttpStatus.CREATED);
 	}
 	
@@ -86,24 +100,26 @@ public class UserService extends CommonComponent{
 			userVo = userMapper.selectWingUser(userVo);
 			if(userVo.getUserIdPk() != null || userVo.getNickname() != null ) {
 				
+				logger("[로그인] 토큰생성");
 				UserVo loginUsers = userVo;
 				String token = jwtService.create("member", loginUsers, "user");
 				headers.add("Authorization", token);
 				
-			}else {
-				logger("[로그인] 아이디나 비번이 틀림");
-				throw new GlobalException();
 			}
 		} catch (Exception e) {
 			logger("[로그인] 실패/오류");
-			throw new GlobalException();
+			throw new GlobalException(e);
 		}
-		
-		return makeResponseEntity2(resMap, headers, HttpStatus.CREATED);
+		logger("[로그인] 서비스종료");
+		return makeResponseEntity2(resMap, headers, HttpStatus.OK);
 	}
 	
 	public ResponseEntity<Object> makeResponseEntity2(Object obj, HttpHeaders headers, HttpStatus status){
-		return new ResponseEntity<Object>(obj, headers, status); 
+		try {
+			return new ResponseEntity<Object>(obj, headers, status); 
+		} catch (Exception e) {
+			throw new GlobalException(e);
+		}
 	}
 	
 	public ResponseEntity<Object> makeResponseEntity(Object obj, HttpStatus status){
