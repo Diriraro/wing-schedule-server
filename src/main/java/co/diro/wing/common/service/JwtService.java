@@ -7,14 +7,20 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.google.gson.Gson;
+
+import co.diro.wing.common.component.CommonComponent;
 import co.diro.wing.common.exception.GlobalException;
+import co.diro.wing.user.vo.UserTokenVo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
@@ -26,20 +32,37 @@ public class JwtService{
 	@Value("${jwt.secret}")
     private String SALT;
     
-    public <T> String create(String key, T data, String subject){
+	@Autowired
+	private CommonComponent commonComponent;
+	
+    public String create(String key, UserTokenVo data, String subject){
     	
+    	String json = commonComponent.toJson(data);
     	try {
-    		String jwt = Jwts.builder()
+//    		System.out.println(json);
+    		
+    		
+    		JwtBuilder builder = Jwts.builder()
+    				.setSubject(subject)
     				.setHeaderParam("typ", "JWT")
     				.setHeaderParam("regDate", System.currentTimeMillis())
-    				.setSubject(subject)
     				.setExpiration(new Date(System.currentTimeMillis() + 86400 * 1000 * 2))
-    				.claim(key, data)
-    				.signWith(SignatureAlgorithm.HS256, this.generateKey())
-    				.compact();
-    		return jwt;
+    				.claim(key, json)
+    				.signWith(SignatureAlgorithm.HS256, this.generateKey());
+    		
+//    		String jwt = Jwts.builder()
+//    				.setSubject(subject)
+//    				.setHeaderParam("typ", "JWT")
+//    				.setHeaderParam("regDate", System.currentTimeMillis())
+//    				.setExpiration(new Date(System.currentTimeMillis() + 86400 * 1000 * 2))
+//    				.claim(key, data)
+//    				.signWith(SignatureAlgorithm.HS256, this.generateKey())
+//    				.compact();
+    		return builder.compact();
 			
 		} catch (Exception e) {
+			e.printStackTrace();
+			log.error(e.getMessage());
 			throw new GlobalException(e);
 		}
     }   
@@ -73,7 +96,8 @@ public class JwtService{
 			}else{
 				log.error(e.getMessage());
 			}
-			throw new GlobalException();
+			log.error(e.getMessage());
+			throw new GlobalException(e);
 //			throw new UnauthorizedException();
 		}
 		@SuppressWarnings("unchecked")

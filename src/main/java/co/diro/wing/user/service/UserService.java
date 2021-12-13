@@ -22,6 +22,7 @@ import co.diro.wing.common.exception.GlobalException;
 import co.diro.wing.common.service.JwtService;
 import co.diro.wing.common.util.StringUtil;
 import co.diro.wing.user.mapper.UserMapper;
+import co.diro.wing.user.vo.UserTokenVo;
 import co.diro.wing.user.vo.UserVo;
 
 
@@ -96,12 +97,13 @@ public class UserService extends CommonComponent{
 		Map<String, Object> resMap = new HashMap<>();
 		
 		try {
+			UserTokenVo loginUsers = new UserTokenVo();
 			logger("[로그인] 회원 확인");
-			userVo = userMapper.selectWingUser(userVo);
-			if(userVo.getUserIdPk() != null || userVo.getNickname() != null ) {
+			loginUsers = userMapper.loginWingUser(userVo);
+			if(loginUsers.getUserIdPk() != null || loginUsers.getNickname() != null ) {
 				
 				logger("[로그인] 토큰생성");
-				UserVo loginUsers = userVo;
+//				UserVo loginUsers = userVo;
 				String token = jwtService.create("member", loginUsers, "user");
 				headers.add("Authorization", token);
 				

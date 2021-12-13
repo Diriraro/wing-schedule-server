@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import co.diro.wing.user.vo.UserTokenVo;
 import co.diro.wing.user.vo.UserVo;
 
 @Mapper
@@ -13,7 +14,7 @@ public interface UserMapper {
 	
 	public int insertWingUser(UserVo userVo);
 	
-	public UserVo selectWingUser(UserVo userVo);
+	public UserTokenVo loginWingUser(UserVo userVo);
 	
 	public int updateCheckWingUser(UserVo userVo);
 }
