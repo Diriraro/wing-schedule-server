@@ -1,4 +1,4 @@
-package co.diro.wing.user.mapper;
+package co.diro.wing.main.mapper;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import co.diro.wing.user.vo.UserTokenVo;
 import co.diro.wing.user.vo.UserVo;
 
 @Mapper
-public interface UserMapper {
+public interface NoticeMapper {
 	
 	public UserVo selectCheckWingUser(UserVo userVo);
 	

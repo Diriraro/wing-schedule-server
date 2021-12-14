@@ -12,8 +12,6 @@ public class UserTokenVo{
 
 	private String userIdPk;
 	private String nickname;
-	private String email;
 	private String charClass;
-	private String role;
 	
 }

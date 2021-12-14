@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,9 +47,49 @@ public class UserController {
 		return userService.joinWingUser(userVo, request);
 	}
 	
+	/**
+	 * 로그인 
+	 * @return
+	 */
 	@PostMapping("/wingService/wingUserLogin")
 	public Object loginWingUser(UserVo userVo, HttpServletRequest request) {
 		return userService.loginWingUser(userVo, request);
+	}
+	
+	/**
+	 * 새 길드원 pre테이블에 추가 
+	 * @return
+	 */
+	@PostMapping("/wingService/wingPreMemPush")
+	public Object pushPreMember(UserVo userVo, HttpServletRequest request) {
+		return userService.pushPreMember(userVo, request);
+	}
+	
+	/**
+	 * 회원정보
+	 * @return
+	 */
+	@GetMapping("/wingService/wingGetUsrData")
+	public Object getUserData(HttpServletRequest request) {
+		return userService.getUserData(request);
+	}
+	
+	/**
+	 * 회원정보 진입 전 비밀번호 인증
+	 * @return
+	 */
+	@PostMapping("/wingService/wingCheckUsrData")
+	public Object checkUserData(UserVo userVo,HttpServletRequest request) {
+		return userService.checkUserData(userVo, request);
+	}
+	
+	/**
+	 * 회원정보 변경
+	 * @return
+	 */
+	@PutMapping("/wingService/wingChangeUsrData")
+	public Object changeUserData(UserVo userVo,HttpServletRequest request) {
+		return userService.changeUserData(userVo, request);
 	}
 	
 }

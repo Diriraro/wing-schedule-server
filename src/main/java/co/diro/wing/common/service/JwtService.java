@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,10 +16,13 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.google.gson.Gson;
 
+import ch.qos.logback.classic.Logger;
 import co.diro.wing.common.component.CommonComponent;
+import co.diro.wing.common.exception.AuthException;
 import co.diro.wing.common.exception.GlobalException;
 import co.diro.wing.user.vo.UserTokenVo;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -27,42 +31,27 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service("jwtService")
-public class JwtService{
-
+public class JwtService extends CommonComponent{
+	
 	@Value("${jwt.secret}")
     private String SALT;
     
-	@Autowired
-	private CommonComponent commonComponent;
-	
     public String create(String key, UserTokenVo data, String subject){
     	
-    	String json = commonComponent.toJson(data);
     	try {
-//    		System.out.println(json);
     		
-    		
-    		JwtBuilder builder = Jwts.builder()
-    				.setSubject(subject)
+    		String jwt = Jwts.builder()
     				.setHeaderParam("typ", "JWT")
     				.setHeaderParam("regDate", System.currentTimeMillis())
-    				.setExpiration(new Date(System.currentTimeMillis() + 86400 * 1000 * 2))
-    				.claim(key, json)
-    				.signWith(SignatureAlgorithm.HS256, this.generateKey());
+    				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60L * 60L ))
+    				.setSubject(subject)
+    				.claim(key, data)
+    				.signWith(SignatureAlgorithm.HS256, this.generateKey())
+    				.compact();
     		
-//    		String jwt = Jwts.builder()
-//    				.setSubject(subject)
-//    				.setHeaderParam("typ", "JWT")
-//    				.setHeaderParam("regDate", System.currentTimeMillis())
-//    				.setExpiration(new Date(System.currentTimeMillis() + 86400 * 1000 * 2))
-//    				.claim(key, data)
-//    				.signWith(SignatureAlgorithm.HS256, this.generateKey())
-//    				.compact();
-    		return builder.compact();
+    		return jwt;
 			
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.error(e.getMessage());
 			throw new GlobalException(e);
 		}
     }   
@@ -102,7 +91,7 @@ public class JwtService{
 		}
 		@SuppressWarnings("unchecked")
         Map<String, Object> value = (LinkedHashMap<String, Object>)claims.getBody().get(key);
-        System.out.println(value);
+        log.info("token value : "+value);
 		return value;
 	}
 
@@ -110,21 +99,22 @@ public class JwtService{
 		return (Integer) this.get("member").get("id");
 	}
 
-	public boolean isUsable(String jwt) {
+	public boolean isUsable(String jwt) throws Exception {
 		try{
+			String ckSub = jwt.substring(7); 
 			Jws<Claims> claims = Jwts.parser()
 					  .setSigningKey(this.generateKey())
-					  .parseClaimsJws(jwt);
+					  .parseClaimsJws(ckSub);
 			return true;
 			
-		}catch (Exception e) {
+		}catch (ExpiredJwtException e) {
 			
 			if(log.isInfoEnabled()){
 				e.printStackTrace();
 			}else{
 				log.error(e.getMessage());
 			}
-			throw new GlobalException();
+			throw new AuthException(e);
 //			throw new UnauthorizedException();
 
 			/*개발환경!!!

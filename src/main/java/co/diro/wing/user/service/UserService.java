@@ -100,7 +100,7 @@ public class UserService extends CommonComponent{
 			UserTokenVo loginUsers = new UserTokenVo();
 			logger("[로그인] 회원 확인");
 			loginUsers = userMapper.loginWingUser(userVo);
-			if(loginUsers.getUserIdPk() != null || loginUsers.getNickname() != null ) {
+			if(loginUsers.getCharClass() != null || loginUsers.getNickname() != null ) {
 				
 				logger("[로그인] 토큰생성");
 //				UserVo loginUsers = userVo;
@@ -115,6 +115,100 @@ public class UserService extends CommonComponent{
 		logger("[로그인] 서비스종료");
 		return makeResponseEntity2(resMap, headers, HttpStatus.OK);
 	}
+	
+	@Transactional
+	public Object pushPreMember(UserVo userVo, HttpServletRequest request) {
+		logger("[신규가입자 pre 등록] 서비스 시작");
+		Map<String, Object> resMap = new HashMap<>();
+		
+		try {
+			logger("[신규가입자 pre 등록] 등록 시작");
+			userMapper.insertPreMember(userVo);
+			
+			logger("[신규가입자 pre 등록] 등록 완료");
+		} catch (Exception e) {
+			logger("[신규가입자 pre 등록] 실패/오류");
+			throw new GlobalException(e);
+		}
+		
+		logger("[신규가입자 pre 등록] 서비스종료");
+		return makeResponseEntity(resMap, HttpStatus.CREATED);
+	}
+	
+	@Transactional
+	public Object getUserData(HttpServletRequest request) {
+		Map<String, Object> resMap = new HashMap<>();
+		logger("[유저정보 get] 서비스시작");
+		try {
+			logger("[유저정보 get] 토큰 복호화 시작");
+			UserVo userVo = new UserVo();
+			String token = request.getHeader("Authorization");
+			if(token != null && jwtService.isUsable(token)) {
+				Map<String, Object> tokenMap = jwtService.get("member");
+				userVo.setUserIdPk(tokenMap.get("userIdPk")+"");
+				userVo = userMapper.selectUserData(userVo);
+				logger("[유저정보 get] 정보 가져오기 완료");
+				resMap.put("user", userVo);
+			}
+		} catch (Exception e) {
+			logger("[유저정보 get] 실패/오류");
+			throw new GlobalException(e);
+		}
+		
+		logger("[유저정보 get] 서비스종료");
+		return makeResponseEntity(resMap, HttpStatus.OK);
+	}
+	
+	@Transactional
+	public Object checkUserData(UserVo userVo, HttpServletRequest request) {
+		Map<String, Object> resMap = new HashMap<>();
+		logger("[유저정보 check] 서비스시작");
+		try {
+			logger("[유저정보 check] 토큰 복호화 시작");
+			String token = request.getHeader("Authorization");
+			if(token != null && jwtService.isUsable(token)) {
+				Map<String, Object> tokenMap = jwtService.get("member");
+				userVo.setUserIdPk(tokenMap.get("userIdPk")+"");
+				userVo = userMapper.checkUserData(userVo);
+				logger("[유저정보 check] 회원 비밀번호 확인 완료");
+			}
+		} catch (Exception e) {
+			logger("[유저정보 check] 실패/오류");
+			throw new GlobalException(e);
+		}
+		
+		logger("[유저정보 check] 서비스종료");
+		return makeResponseEntity(resMap, HttpStatus.OK);
+	}
+	
+	@Transactional
+	public Object changeUserData(UserVo userVo, HttpServletRequest request) {
+		Map<String, Object> resMap = new HashMap<>();
+		logger("[유저정보 change] 서비스시작");
+		try {
+			logger("[유저정보 change] 토큰 복호화 시작");
+			String token = request.getHeader("Authorization");
+			if(token != null && jwtService.isUsable(token)) {
+				Map<String, Object> tokenMap = jwtService.get("member");
+				userVo.setUserIdPk(tokenMap.get("userIdPk")+"");
+				
+				if(userVo.getPassword() != null) {
+					userVo.setPasswordOld(userMapper.selectUserPwForChange(userVo));
+				}
+				
+				userMapper.updateUserData(userVo);
+				logger("[유저정보 change] 회원정보 변경 완료");
+			}
+		} catch (Exception e) {
+			logger("[유저정보 change] 실패/오류");
+			throw new GlobalException(e);
+		}
+		
+		logger("[유저정보 change] 서비스종료");
+		return makeResponseEntity(resMap, HttpStatus.OK);
+	}
+	
+	
 	
 	public ResponseEntity<Object> makeResponseEntity2(Object obj, HttpHeaders headers, HttpStatus status){
 		try {
