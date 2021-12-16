@@ -1,125 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="co.diro.wing.user.mapper.UserMapper">
+<mapper namespace="co.diro.wing.user.mapper.NoticeMapper">
 	
-	<select id="selectCheckWingUser" resultType="userVo" parameterType="userVo">
-		SELECT /*+ SQL_ID: co.diro.wing.user.mapper.UserMapper.selectCheckWingUser */
-		       p1.nickname
-		     , p1.pre_join_ck 			AS preJoinCk
-		  FROM wing.ws_pre_member_tb p1
+	<select id="selectNoticeListCount" resultType="int" >
+		SELECT /*+ SQL_ID: co.diro.wing.user.mapper.NoticeMapper.selectNoticeListCount */
+			   COUNT(*)
+		  FROM wing.ws_notice_tb t1
 		 WHERE 1=1
-		   AND p1.nickname = #{nickname}
 	</select>
 	
-	<insert id="insertWingUser" parameterType="userVo">
-		INSERT /*+ SQL_ID: co.diro.wing.user.mapper.UserMapper.insertWingUser */
-		  INTO wing.ws_user_tb
-		(
-			   user_id_pk
-			 , password
-			 , nickname
-			 , email
-			 , char_class
-			 , role
-		)
-		VALUES
-		(
-			   #{userIdPk}
-			 , #{password}
-			 , #{nickname}
-			 , #{email}
-			 , #{charClass}
-			 , #{role}
-		)
-	</insert>
-	
-	<select id="loginWingUser" resultType="userTokenVo" parameterType="userVo">
-		SELECT /*+ SQL_ID: co.diro.wing.user.mapper.UserMapper.loginWingUser */
-		       user_id_pk
-<!-- 			 , password -->
-			 , nickname
-<!-- 			 , email -->
-			 , char_class
-<!-- 			 , role -->
-		  FROM wing.ws_user_tb u1
+	<select id="selectNoticeList" resultType="noticeVo" >
+		SELECT /*+ SQL_ID: co.diro.wing.user.mapper.NoticeMapper.selectNoticeList */
+			   notice_oid
+			 , notice_title
+			 , notice_content
+			 , notice_cre_dt
+			 , notice_cre_usr_id
+			 , notice_id
+		  FROM wing.ws_notice_tb t1
 		 WHERE 1=1
-		   AND user_id_pk = #{userIdPk}
-		   AND password = #{password}
+		OFFSET #{startIndex} LIMIT #{pageListSize}
 	</select>
 	
-	<update id="updateCheckWingUser" parameterType="userVo">
-		UPDATE /*+ SQL_ID: co.diro.wing.user.mapper.UserMapper.updateCheckWingUser */
-		      wing.ws_pre_member_tb 
-		  SET pre_join_ck = true
-		WHERE nickname = #{nickname}
-	</update>
-	
-	<insert id="insertPreMember" parameterType="userVo">
-		INSERT /*+ SQL_ID: co.diro.wing.user.mapper.UserMapper.insertPreMember */
-		  INTO wing.ws_pre_member_tb
-		(
-			   nickname
-			 , pre_join_ck    
-		)
-		VALUES
-		(
-			   #{nickname}
-			 , false
-		)
-	</insert>
-	
-	<select id="selectUserData" parameterType="userVo" resultType="userVo">
-		SELECT /*+ SQL_ID: co.diro.wing.user.mapper.UserMapper.selectUserData */
-		       user_id_pk
-			 , nickname
-			 , email
-			 , char_class
-			 , role
-		  FROM wing.ws_user_tb u1
+	<select id="selectNotice" resultType="noticeVo" >
+		SELECT /*+ SQL_ID: co.diro.wing.user.mapper.NoticeMapper.selectNoticeList */
+			   notice_oid
+			 , notice_title
+			 , notice_content
+			 , notice_cre_dt
+			 , notice_cre_usr_id
+			 , notice_id
+		  FROM wing.ws_notice_tb t1
 		 WHERE 1=1
-		   AND user_id_pk = #{userIdPk}
+		   AND notice_oid = #{noticeOid}
 	</select>
 	
-	<select id="checkUserData" resultType="userVo" parameterType="userVo">
-		SELECT /*+ SQL_ID: co.diro.wing.user.mapper.UserMapper.checkUserData */
-		       user_id_pk
-<!-- 			 , password -->
-		  FROM wing.ws_user_tb u1
-		 WHERE 1=1
-		   AND user_id_pk = #{userIdPk}
-		   AND password = #{password}
-	</select>
-
-	<select id="selectUserPwForChange" resultType="string" parameterType="userVo">
-		SELECT /*+ SQL_ID: co.diro.wing.user.mapper.UserMapper.checkUserData */
-			   password AS passwordOld
-		  FROM wing.ws_user_tb u1
-		 WHERE 1=1
-		   AND user_id_pk = #{userIdPk}
-		   AND password = #{password}
-	</select>
 	
-	<update id="updateUserData" parameterType="userVo">
-		UPDATE /*+ SQL_ID: co.diro.wing.user.mapper.UserMapper.updateUserData */
-		      wing.ws_user_tb 
-		  SET 
-		  	  user_id_pk = #{userIdPk}
-		  <if test="@co.diro.wing.common.util.StringUtil@isNotEmpty(password)">
-		  	, password		= #{password}
-		  </if>
-		  <if test="@co.diro.wing.common.util.StringUtil@isNotEmpty(email)">
-		    , email 		= #{email}
-		  </if>
-	      <if test="@co.diro.wing.common.util.StringUtil@isNotEmpty(charClass)">
-		    , char_class	= #{charClass}
-		  </if>
-	      <if test="@co.diro.wing.common.util.StringUtil@isNotEmpty(role)">
-		    , role			= #{charClass}
-		  </if>
-		  <if test="@co.diro.wing.common.util.StringUtil@isNotEmpty(passwordOld)">
-		    , password_old	= #{charClass}
-		  </if>
-		WHERE user_id_pk = #{userIdPk}
-	</update>
 	
 </mapper>

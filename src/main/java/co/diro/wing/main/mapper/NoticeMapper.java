@@ -4,27 +4,21 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import co.diro.wing.user.vo.UserTokenVo;
-import co.diro.wing.user.vo.UserVo;
+import co.diro.wing.main.vo.NoticeVo;
 
 @Mapper
 public interface NoticeMapper {
 	
-	public UserVo selectCheckWingUser(UserVo userVo);
+	public int selectNoticeListCount(NoticeVo noticeVo);
 	
-	public int insertWingUser(UserVo userVo);
+	public List<NoticeVo> selectNoticeList(NoticeVo noticeVo);
 	
-	public UserTokenVo loginWingUser(UserVo userVo);
+	public NoticeVo selectNotice(NoticeVo noticeVo);
 	
-	public int updateCheckWingUser(UserVo userVo);
+	public int insertNotice(NoticeVo noticeVo);
 	
-	public int insertPreMember(UserVo userVo);
+	public int updateNotice(NoticeVo noticeVo);
 	
-	public UserVo selectUserData(UserVo userVo);
-
-	public UserVo checkUserData(UserVo userVo);
+	public int deleteNotice(NoticeVo noticeVo);
 	
-	public String selectUserPwForChange(UserVo userVo);
-	
-	public int updateUserData(UserVo userVo);
 }

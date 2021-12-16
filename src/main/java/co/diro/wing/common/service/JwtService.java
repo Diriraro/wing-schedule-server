@@ -122,4 +122,19 @@ public class JwtService extends CommonComponent{
 			 
 		}
 	}
+	
+	public String getUserId(HttpServletRequest request) throws Exception {
+		String token = request.getHeader("Authorization");
+		String id = "";
+		try {
+			if(token != null && this.isUsable(token)) {
+				Map<String, Object> tokenMap = this.get("member");
+				 id = tokenMap.get("userIdPk")+"";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AuthException(e);
+		}
+		return id;
+	}
 }

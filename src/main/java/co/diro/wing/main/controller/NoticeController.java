@@ -50,27 +50,36 @@ public class NoticeController {
 	/**
 	 * 공지사항 등록
 	 * @return
+	 * @throws Exception 
 	 */
 	@PostMapping("/wingService/getNoticeList")
-	public Object createNotice(NoticeVo noticeVo, HttpServletRequest request) {
+	public Object createNotice(NoticeVo noticeVo, HttpServletRequest request) throws Exception {
+		String userId = jwtservice.getUserId(request);
+		noticeVo.setNoticeCreUsrId(userId);
 		return noticeService.createNotice(noticeVo);
 	}
 	
 	/**
 	 * 공지사항 수정
 	 * @return
+	 * @throws Exception 
 	 */
 	@PutMapping("/wingService/getNoticeList")
-	public Object changeNotice(NoticeVo noticeVo, HttpServletRequest request) {
+	public Object changeNotice(NoticeVo noticeVo, HttpServletRequest request) throws Exception {
+		String userId = jwtservice.getUserId(request);
+		noticeVo.setNoticeCreUsrId(userId);
 		return noticeService.changeNotice(noticeVo);
 	}
 	
 	/**
 	 * 공지사항 삭제
 	 * @return
+	 * @throws Exception 
 	 */
 	@DeleteMapping("/wingService/getNoticeList")
-	public Object deleteNotice(NoticeVo noticeVo, HttpServletRequest request) {
+	public Object deleteNotice(NoticeVo noticeVo, HttpServletRequest request) throws Exception {
+		String userId = jwtservice.getUserId(request);
+		noticeVo.setNoticeCreUsrId(userId);
 		return noticeService.deleteNotice(noticeVo);
 	}
 	
