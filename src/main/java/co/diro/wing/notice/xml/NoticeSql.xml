@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.diro.wing.notice.mapper.NoticeMapper">
+	
+	<select id="selectNoticeListCount" resultType="int" >
+		SELECT /*+ SQL_ID: co.diro.wing.notice.mapper.NoticeMapper.selectNoticeListCount */
+			   COUNT(*)
+		  FROM wing.ws_notice_tb t1
+		 WHERE 1=1
+	</select>
+	
+	<select id="selectNoticeList" resultType="noticeVo" >
+		SELECT /*+ SQL_ID: co.diro.wing.notice.mapper.NoticeMapper.selectNoticeList */
+			   notice_oid
+			 , notice_title
+			 , notice_content
+			 , notice_cre_dt
+			 , notice_cre_usr_id
+			 , notice_id
+		  FROM wing.ws_notice_tb t1
+		 WHERE 1=1
+		OFFSET #{startIndex} LIMIT #{pageListSize}
+	</select>
+	
+	<select id="selectNotice" resultType="noticeVo" >
+		SELECT /*+ SQL_ID: co.diro.wing.notice.mapper.NoticeMapper.selectNoticeList */
+			   notice_oid
+			 , notice_title
+			 , notice_content
+			 , notice_cre_dt
+			 , notice_cre_usr_id
+			 , notice_id
+		  FROM wing.ws_notice_tb t1
+		 WHERE 1=1
+		   AND notice_oid = #{noticeOid}
+	</select>
+	
+	<insert id="insertNotice" parameterType="noticeVo">
+		INSERT /*+ SQL_ID: co.diro.wing.notice.mapper.NoticeMapper.insertNotice */
+		  INTO wing.ws_notice_tb
+		     (
+		       notice_title
+		     , notice_content
+		     , notice_cre_dt
+		     , notice_cre_usr_id
+		     , notice_id
+		     )
+		VALUES
+			 (
+			   #{noticeTitle}
+			 , #{noticeContent}
+			 , current_timestamp
+			 , #{noticeCreUsrId}
+			 , #{noticeId}
+			 )
+	</insert>
+	
+	<update id="updateNotice" parameterType="noticeVo">
+		UPDATE /*+ SQL_ID: co.diro.wing.notice.mapper.NoticeMapper.updateNotice */
+		       wing.ws_notice_tb
+		     (
+		       notice_title
+		     , notice_content
+		     , notice_cre_dt
+		     , notice_cre_usr_id
+		     , notice_id
+		     )
+		   SET
+			 (
+			   #{noticeTitle}
+			 , #{noticeContent}
+			 , current_timestamp
+			 , #{noticeCreUsrId}
+			 , #{noticeId}
+			 )
+	</update>
+	
+	<delete id="deleteNotice" parameterType="noticeVo">
+		DELETE /*+ SQL_ID: co.diro.wing.notice.mapper.NoticeMapper.deleteNotice */
+		  FROM wing.ws_notice_tb
+		 WHERE notice_oid = #{noticeOid}
+		   AND notice_cre_usr_id = #{noticeCreUsrId}
+	</delete>
+	
+</mapper>

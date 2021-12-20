@@ -1,4 +1,4 @@
-package co.diro.wing.main.service;
+package co.diro.wing.notice.service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,8 +22,8 @@ import co.diro.wing.common.exception.AuthException;
 import co.diro.wing.common.exception.GlobalException;
 import co.diro.wing.common.service.JwtService;
 import co.diro.wing.common.util.StringUtil;
-import co.diro.wing.main.mapper.NoticeMapper;
-import co.diro.wing.main.vo.NoticeVo;
+import co.diro.wing.notice.mapper.NoticeMapper;
+import co.diro.wing.notice.vo.NoticeVo;
 import co.diro.wing.user.mapper.UserMapper;
 import co.diro.wing.user.vo.UserTokenVo;
 import co.diro.wing.user.vo.UserVo;

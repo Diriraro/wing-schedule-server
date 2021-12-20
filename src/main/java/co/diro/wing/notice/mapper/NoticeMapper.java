@@ -1,10 +1,10 @@
-package co.diro.wing.main.mapper;
+package co.diro.wing.notice.mapper;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import co.diro.wing.main.vo.NoticeVo;
+import co.diro.wing.notice.vo.NoticeVo;
 
 @Mapper
 public interface NoticeMapper {

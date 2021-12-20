@@ -1,4 +1,4 @@
-package co.diro.wing.main.controller;
+package co.diro.wing.notice.controller;
 
 import java.util.HashMap;
 
@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ch.qos.logback.classic.Logger;
 import co.diro.wing.common.service.JwtService;
-import co.diro.wing.main.service.NoticeService;
-import co.diro.wing.main.vo.NoticeVo;
+import co.diro.wing.notice.service.NoticeService;
+import co.diro.wing.notice.vo.NoticeVo;
 
 @RestController
 public class NoticeController {
@@ -42,7 +42,7 @@ public class NoticeController {
 	 * 공지사항 상세
 	 * @return
 	 */
-	@GetMapping("/wingService/getNoticeList")
+	@GetMapping("/wingService/getNotice")
 	public Object getNotice(NoticeVo noticeVo, HttpServletRequest request) {
 		return noticeService.getNotice(noticeVo);
 	}
@@ -52,7 +52,7 @@ public class NoticeController {
 	 * @return
 	 * @throws Exception 
 	 */
-	@PostMapping("/wingService/getNoticeList")
+	@PostMapping("/wingService/getNotice")
 	public Object createNotice(NoticeVo noticeVo, HttpServletRequest request) throws Exception {
 		String userId = jwtservice.getUserId(request);
 		noticeVo.setNoticeCreUsrId(userId);
@@ -64,7 +64,7 @@ public class NoticeController {
 	 * @return
 	 * @throws Exception 
 	 */
-	@PutMapping("/wingService/getNoticeList")
+	@PutMapping("/wingService/getNotice")
 	public Object changeNotice(NoticeVo noticeVo, HttpServletRequest request) throws Exception {
 		String userId = jwtservice.getUserId(request);
 		noticeVo.setNoticeCreUsrId(userId);
@@ -76,7 +76,7 @@ public class NoticeController {
 	 * @return
 	 * @throws Exception 
 	 */
-	@DeleteMapping("/wingService/getNoticeList")
+	@DeleteMapping("/wingService/getNotice")
 	public Object deleteNotice(NoticeVo noticeVo, HttpServletRequest request) throws Exception {
 		String userId = jwtservice.getUserId(request);
 		noticeVo.setNoticeCreUsrId(userId);

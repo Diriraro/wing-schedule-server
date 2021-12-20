@@ -1,4 +1,4 @@
-package co.diro.wing.main.vo;
+package co.diro.wing.notice.vo;
 
 import java.sql.Timestamp;
 import java.util.List;
