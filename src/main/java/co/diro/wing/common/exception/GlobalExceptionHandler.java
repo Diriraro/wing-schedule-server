@@ -19,6 +19,10 @@ public class GlobalExceptionHandler {
 	
 	Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
+	@ExceptionHandler(AuthException.class)
+	public ResponseEntity<String> handleAuthException(HttpServletRequest request, AuthException ex) {
+		return getResponseEntity(HttpStatus.UNAUTHORIZED, ex);
+	}
 	
 	/**
 	 * <pre>접근 제한시 403 관련</pre>
@@ -80,7 +84,7 @@ public class GlobalExceptionHandler {
 			code = 5000;
 		}else if(status.getReasonPhrase().equals(HttpStatus.UNAUTHORIZED.getReasonPhrase())){
 			code = 4001;
-		// 2020-05-06 422  처리할 수 없는 개체. 사용자 정의 ERROR 추가.
+			infoMessage = e.getMessage();
 		}else if(status.getReasonPhrase().equals(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase())){
 			code = 4022;
 			infoMessage = e.getMessage();

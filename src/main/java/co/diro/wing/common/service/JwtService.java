@@ -107,19 +107,10 @@ public class JwtService extends CommonComponent{
 					  .parseClaimsJws(ckSub);
 			return true;
 			
-		}catch (ExpiredJwtException e) {
-			
-			if(log.isInfoEnabled()){
-				e.printStackTrace();
-			}else{
-				log.error(e.getMessage());
-			}
-			throw new AuthException(e);
-//			throw new UnauthorizedException();
-
-			/*개발환경!!!
-			 * return false;*/
-			 
+		}catch (Exception e) {
+			e.printStackTrace();
+			log.error(e.getMessage());
+			throw new AuthException("재로그인이 필요합니다.");
 		}
 	}
 	
