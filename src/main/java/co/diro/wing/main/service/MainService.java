@@ -23,7 +23,7 @@ import co.diro.wing.common.exception.GlobalException;
 import co.diro.wing.common.service.JwtService;
 import co.diro.wing.common.util.StringUtil;
 import co.diro.wing.main.mapper.MainMapper;
-import co.diro.wing.main.vo.MainVo;
+import co.diro.wing.main.vo.ScheduleVo;
 import co.diro.wing.notice.mapper.NoticeMapper;
 import co.diro.wing.notice.vo.NoticeVo;
 import co.diro.wing.user.mapper.UserMapper;
@@ -46,17 +46,17 @@ public class MainService extends CommonComponent{
 	public Object getScheduleList(HashMap<String, String> params) {
 		logger("[스케줄 목록] 서비스 시작");
 		Map<String, Object> resMap = new HashMap<>();
-		MainVo mainVo = new MainVo();
+		ScheduleVo scheduleVo = new ScheduleVo();
 		try {
 
 			logger("[스케줄 목록] 목록 카운트 조회");
-			int totalListSize = mainMapper.selectScheduleListCount(mainVo);
-			mainVo.setTotalListSize(totalListSize);
+			int totalListSize = mainMapper.selectScheduleListCount(scheduleVo);
+			scheduleVo.setTotalListSize(totalListSize);
 			logger("[스케줄 목록] 목록 조회");
-			List<MainVo> list = mainMapper.selectScheduleList(mainVo);
+			List<ScheduleVo> list = mainMapper.selectScheduleList(scheduleVo);
 			
 			resMap.put("list", list);
-			resMap.put("page", mainVo);
+			resMap.put("page", scheduleVo);
 		} catch (Exception e) {
 			
 			logger("[스케줄 목록] 실패/오류");
@@ -67,13 +67,18 @@ public class MainService extends CommonComponent{
 	}
 	
 	@Transactional
-	public Object getSchedule(MainVo mainVo) {
+	public Object getSchedule(ScheduleVo scheduleVo) {
 		logger("[스케줄 상세] 서비스 시작");
 		Map<String, Object> resMap = new HashMap<>();
 		try {
 			
 			logger("[스케줄 상세] 상세 조회");
-//			resMap.put("list", list);
+			scheduleVo = mainMapper.selectSchedule(scheduleVo);
+			
+			List<ScheduleVo> joinList = mainMapper.selectJoinScheduleList(scheduleVo); 
+			
+			resMap.put("schedule", scheduleVo);
+			resMap.put("join", joinList);
 		} catch (Exception e) {
 			
 			logger("[스케줄 상세] 실패/오류");
@@ -84,104 +89,134 @@ public class MainService extends CommonComponent{
 	}
 	
 	@Transactional
-	public Object createSchedule(MainVo mainVo) {
-		logger("[공지사항 목록] 서비스 시작");
+	public Object createSchedule(ScheduleVo scheduleVo) {
+		logger("[스케줄 등록] 서비스 시작");
 		Map<String, Object> resMap = new HashMap<>();
 		try {
 			
-			logger("[공지사항 목록] 목록 카운트 조회");
-//			resMap.put("list", list);
+			logger("[스케줄 등록] 아이디 조회 및 등록");
+			if(!scheduleVo.getScWriter().equals("") || scheduleVo.getScWriter() != null) {
+				mainMapper.insertSchedule(scheduleVo);
+			}else {
+				logger("[공지사항 수정] 토큰오류");
+				throw new AuthException();
+			}
 		} catch (Exception e) {
 			
-			logger("[공지사항 목록] 실패/오류");
+			logger("[스케줄 등록] 실패/오류");
 			throw new GlobalException(e);
 		}
-		logger("[공지사항 목록] 서비스 종료");
+		logger("[스케줄 등록] 서비스 종료");
 		return makeResponseEntity(resMap, HttpStatus.OK);
 	}
 	
 	@Transactional
-	public Object putSchedule(MainVo mainVo) {
-		logger("[공지사항 목록] 서비스 시작");
+	public Object putSchedule(ScheduleVo scheduleVo) {
+		logger("[스케줄 수정] 서비스 시작");
 		Map<String, Object> resMap = new HashMap<>();
 		try {
 			
-			logger("[공지사항 목록] 목록 카운트 조회");
-//			resMap.put("list", list);
+			logger("[스케줄 수정] 아이디 조회 및 수정");
+			if(!scheduleVo.getScWriter().equals("") || scheduleVo.getScWriter() != null) {
+				mainMapper.updateSchedule(scheduleVo);
+			}else {
+				logger("[공지사항 수정] 토큰오류");
+				throw new AuthException();
+			}
 		} catch (Exception e) {
 			
-			logger("[공지사항 목록] 실패/오류");
+			logger("[스케줄 수정] 실패/오류");
 			throw new GlobalException(e);
 		}
-		logger("[공지사항 목록] 서비스 종료");
+		logger("[스케줄 수정] 서비스 종료");
 		return makeResponseEntity(resMap, HttpStatus.OK);
 	}
 	
 	@Transactional
-	public Object deleteSchedule(MainVo mainVo) {
-		logger("[공지사항 목록] 서비스 시작");
+	public Object deleteSchedule(ScheduleVo scheduleVo) {
+		logger("[스케줄 삭제] 서비스 시작");
 		Map<String, Object> resMap = new HashMap<>();
 		try {
 			
-			logger("[공지사항 목록] 목록 카운트 조회");
-//			resMap.put("list", list);
+			logger("[스케줄 삭제] 아이디 삭제 및 삭제");
+			if(!scheduleVo.getScWriter().equals("") || scheduleVo.getScWriter() != null) {
+				mainMapper.deleteSchedule(scheduleVo);
+			}else {
+				logger("[공지사항 수정] 토큰오류");
+				throw new AuthException();
+			}
 		} catch (Exception e) {
 			
-			logger("[공지사항 목록] 실패/오류");
+			logger("[스케줄 삭제] 실패/오류");
 			throw new GlobalException(e);
 		}
-		logger("[공지사항 목록] 서비스 종료");
+		logger("[스케줄 삭제] 서비스 종료");
 		return makeResponseEntity(resMap, HttpStatus.OK);
 	}
 	
 	@Transactional
-	public Object joinSchedule(MainVo mainVo) {
-		logger("[공지사항 목록] 서비스 시작");
+	public Object joinSchedule(ScheduleVo scheduleVo) {
+		logger("[스케줄 참가 등록] 서비스 시작");
 		Map<String, Object> resMap = new HashMap<>();
 		try {
 			
-			logger("[공지사항 목록] 목록 카운트 조회");
-//			resMap.put("list", list);
+			logger("[스케줄 참가 등록] 아이디 조회 및 참가 등록");
+			if(!scheduleVo.getUserIdPk().equals("") || scheduleVo.getUserIdPk() != null) {
+				mainMapper.insertJoinSchedule(scheduleVo);
+			}else {
+				logger("[공지사항 수정] 토큰오류");
+				throw new AuthException();
+			}
 		} catch (Exception e) {
 			
-			logger("[공지사항 목록] 실패/오류");
+			logger("[스케줄 참가 등록] 실패/오류");
 			throw new GlobalException(e);
 		}
-		logger("[공지사항 목록] 서비스 종료");
+		logger("[스케줄 참가 등록] 서비스 종료");
 		return makeResponseEntity(resMap, HttpStatus.OK);
 	}
 	
 	@Transactional
-	public Object putJoinSchedule(MainVo mainVo) {
-		logger("[공지사항 목록] 서비스 시작");
+	public Object putJoinSchedule(ScheduleVo scheduleVo) {
+		logger("[스케줄 참가 수정] 서비스 시작");
 		Map<String, Object> resMap = new HashMap<>();
 		try {
 			
-			logger("[공지사항 목록] 목록 카운트 조회");
-//			resMap.put("list", list);
+			logger("[스케줄 참가 수정] 아이디 조회 및 참가 수정");
+			if(!scheduleVo.getUserIdPk().equals("") || scheduleVo.getUserIdPk() != null) {
+				mainMapper.updateJoinSchedule(scheduleVo);
+			}else {
+				logger("[공지사항 수정] 토큰오류");
+				throw new AuthException();
+			}
 		} catch (Exception e) {
 			
-			logger("[공지사항 목록] 실패/오류");
+			logger("[스케줄 참가 수정] 실패/오류");
 			throw new GlobalException(e);
 		}
-		logger("[공지사항 목록] 서비스 종료");
+		logger("[스케줄 참가 수정] 서비스 종료");
 		return makeResponseEntity(resMap, HttpStatus.OK);
 	}
 	
 	@Transactional
-	public Object deleteJoinSchedule(MainVo mainVo) {
-		logger("[공지사항 목록] 서비스 시작");
+	public Object deleteJoinSchedule(ScheduleVo scheduleVo) {
+		logger("[스케줄 참가 삭제] 서비스 시작");
 		Map<String, Object> resMap = new HashMap<>();
 		try {
 			
-			logger("[공지사항 목록] 목록 카운트 조회");
-//			resMap.put("list", list);
+			logger("[스케줄 참가 삭제] 아이디 조회 및 참가 삭제");
+			if(!scheduleVo.getUserIdPk().equals("") || scheduleVo.getUserIdPk() != null) {
+				mainMapper.deleteJoinSchedule(scheduleVo);
+			}else {
+				logger("[공지사항 수정] 토큰오류");
+				throw new AuthException();
+			}
 		} catch (Exception e) {
 			
-			logger("[공지사항 목록] 실패/오류");
+			logger("[스케줄 참가 삭제] 실패/오류");
 			throw new GlobalException(e);
 		}
-		logger("[공지사항 목록] 서비스 종료");
+		logger("[스케줄 참가 삭제] 서비스 종료");
 		return makeResponseEntity(resMap, HttpStatus.OK);
 	}
 	

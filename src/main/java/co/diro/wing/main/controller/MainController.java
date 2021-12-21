@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ch.qos.logback.classic.Logger;
 import co.diro.wing.common.service.JwtService;
 import co.diro.wing.main.service.MainService;
-import co.diro.wing.main.vo.MainVo;
+import co.diro.wing.main.vo.ScheduleVo;
 
 @RestController
 public class MainController {
@@ -29,44 +29,95 @@ public class MainController {
 	@Autowired
 	private MainService mainService;
 	
+	
+	/**
+	 * 스케줄 목록
+	 * @return
+	 */
 	@GetMapping("/wingService/scheduleList")
 	public Object getScheduleList(HttpServletRequest request, @RequestParam HashMap<String, String> params) {
 		return mainService.getScheduleList(params);
 	}
 	
+	/**
+	 * 스케줄 상세
+	 * @return
+	 */
 	@GetMapping("/wingService/schedule")
-	public Object getSchedule(HttpServletRequest request, MainVo mainVo) {
-		return mainService.getSchedule(mainVo);
+	public Object getSchedule(HttpServletRequest request, ScheduleVo scheduleVo) {
+		return mainService.getSchedule(scheduleVo);
 	}
 	
+	/**
+	 * 스케줄 등록
+	 * @return
+	 * @throws Exception 
+	 */
 	@PostMapping("/wingService/schedule")
-	public Object createSchedule(HttpServletRequest request, MainVo mainVo) {
-		return mainService.createSchedule(mainVo);
+	public Object createSchedule(HttpServletRequest request, ScheduleVo scheduleVo) throws Exception {
+		String userId = jwtservice.getUserId(request);
+		scheduleVo.setScWriter(userId);
+		return mainService.createSchedule(scheduleVo);
 	}
 	
+	/**
+	 * 스케줄 수정
+	 * @return
+	 * @throws Exception 
+	 */
 	@PutMapping("/wingService/schedule")
-	public Object putSchedule(HttpServletRequest request, MainVo mainVo) {
-		return mainService.putSchedule(mainVo);
+	public Object putSchedule(HttpServletRequest request, ScheduleVo scheduleVo) throws Exception {
+		String userId = jwtservice.getUserId(request);
+		scheduleVo.setScWriter(userId);
+		return mainService.putSchedule(scheduleVo);
 	}
 	
+	/**
+	 * 스케줄 삭제
+	 * @return
+	 * @throws Exception 
+	 */
 	@DeleteMapping("/wingService/schedule")
-	public Object deleteSchedule(HttpServletRequest request, MainVo mainVo) {
-		return mainService.deleteSchedule(mainVo);
+	public Object deleteSchedule(HttpServletRequest request, ScheduleVo scheduleVo) throws Exception {
+		String userId = jwtservice.getUserId(request);
+		scheduleVo.setScWriter(userId);
+		return mainService.deleteSchedule(scheduleVo);
 	}
 	
+	/**
+	 * 스케줄 참가 등록
+	 * @return
+	 * @throws Exception 
+	 */
 	@PostMapping("/wingService/scheduleJoin")
-	public Object joinSchedule(HttpServletRequest request, MainVo mainVo) {
-		return mainService.joinSchedule(mainVo);
+	public Object joinSchedule(HttpServletRequest request, ScheduleVo scheduleVo) throws Exception {
+		String userId = jwtservice.getUserId(request);
+		scheduleVo.setUserIdPk(userId);
+		return mainService.joinSchedule(scheduleVo);
 	}
 	
+	/**
+	 * 스케줄 참가 수정
+	 * @return
+	 * @throws Exception 
+	 */
 	@PutMapping("/wingService/scheduleJoin")
-	public Object putJoinSchedule(HttpServletRequest request, MainVo mainVo) {
-		return mainService.putJoinSchedule(mainVo);
+	public Object putJoinSchedule(HttpServletRequest request, ScheduleVo scheduleVo) throws Exception {
+		String userId = jwtservice.getUserId(request);
+		scheduleVo.setUserIdPk(userId);
+		return mainService.putJoinSchedule(scheduleVo);
 	}
 	
+	/**
+	 * 스케줄 참가 삭제
+	 * @return
+	 * @throws Exception 
+	 */
 	@DeleteMapping("/wingService/scheduleJoin")
-	public Object deleteJoinSchedule(HttpServletRequest request, MainVo mainVo) {
-		return mainService.deleteJoinSchedule(mainVo);
+	public Object deleteJoinSchedule(HttpServletRequest request, ScheduleVo scheduleVo) throws Exception {
+		String userId = jwtservice.getUserId(request);
+		scheduleVo.setUserIdPk(userId);
+		return mainService.deleteJoinSchedule(scheduleVo);
 	}
 	
 }

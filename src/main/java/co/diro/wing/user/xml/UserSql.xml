@@ -90,7 +90,7 @@
 		   AND password = #{password}
 	</select>
 
-	<select id="selectUserPwForChange" resultType="string" parameterType="userVo">
+	<select id="selectUserPwForChange" resultType="String" parameterType="userVo">
 		SELECT /*+ SQL_ID: co.diro.wing.user.mapper.UserMapper.checkUserData */
 			   password AS passwordOld
 		  FROM wing.ws_user_tb u1

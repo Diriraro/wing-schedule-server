@@ -2,84 +2,171 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="co.diro.wing.main.mapper.MainMapper">
 	
-	<select id="selectNoticeListCount" resultType="int" >
-		SELECT /*+ SQL_ID: co.diro.wing.notice.mapper.NoticeMapper.selectNoticeListCount */
+	<select id="selectScheduleListCount" resultType="int" >
+		SELECT /*+ SQL_ID: co.diro.wing.main.mapper.MainMapper.selectScheduleListCount */
 			   COUNT(*)
-		  FROM wing.ws_notice_tb t1
+		  FROM wing.ws_schedule_tb t1
 		 WHERE 1=1
 	</select>
 	
-	<select id="selectNoticeList" resultType="noticeVo" >
-		SELECT /*+ SQL_ID: co.diro.wing.notice.mapper.NoticeMapper.selectNoticeList */
-			   notice_oid
-			 , notice_title
-			 , notice_content
-			 , notice_cre_dt
-			 , notice_cre_usr_id
-			 , notice_id
-		  FROM wing.ws_notice_tb t1
+	<select id="selectScheduleList" resultType="scheduleVo" >
+		SELECT /*+ SQL_ID: co.diro.wing.main.mapper.MainMapper.selectScheduleList */
+			   t1.sc_title
+			 , u1.nickname 		AS writerNickname
+			 , t1.sc_content
+			 , t1.sc_start_dt
+			 , t1.sc_start_time
+			 , t1.sc_notice_sch
+			 , t2.lk_cont_name
+			 , t2.lk_cont_max_usr
+		  FROM wing.ws_schedule_tb t1
+	 LEFT JOIN wing.ws_loark_content t2 ON t1.lk_oid = t2.lk_oid 
+	 LEFT JOIN wing.ws_user_tb u1 		ON t1.sc_writer = u1.user_id_pk 
 		 WHERE 1=1
-		OFFSET #{startIndex} LIMIT #{pageListSize}
+		 <if test="@co.diro.wing.common.util.StringUtil@isNotEmpty(fromDate)">
+		    <![CDATA[  AND t1.sc_start_dt >= #{fromDate} ]]>
+		 </if>
+		 <if test="@co.diro.wing.common.util.StringUtil@isNotEmpty(toDate)">
+		    <![CDATA[  AND t1.sc_start_dt <= #{toDate} ]]>
+		 </if>
+<!-- 		OFFSET #{startIndex} LIMIT #{pageListSize} -->
 	</select>
 	
-	<select id="selectNotice" resultType="noticeVo" >
-		SELECT /*+ SQL_ID: co.diro.wing.notice.mapper.NoticeMapper.selectNoticeList */
-			   notice_oid
-			 , notice_title
-			 , notice_content
-			 , notice_cre_dt
-			 , notice_cre_usr_id
-			 , notice_id
-		  FROM wing.ws_notice_tb t1
-		 WHERE 1=1
-		   AND notice_oid = #{noticeOid}
+	<select id="selectSchedule" resultType="scheduleVo" parameterType="scheduleVo">
+		SELECT /*+ SQL_ID: co.diro.wing.main.mapper.MainMapper.selectSchedule */
+			   t1.sc_oid
+			 , t1.sc_title
+			 , t1.sc_writer
+			 , u1.nickname		AS writerNickname
+			 , t1.lk_oid
+			 , t1.sc_content
+			 , t1.sc_cre_dt
+			 , t1.sc_start_dt
+			 , t1.sc_start_time
+			 , t1.sc_notice_sch
+			 , t2.lk_cont_name
+			 , t2.lk_cont_max_usr
+		  FROM wing.ws_schedule_tb t1
+	 LEFT JOIN wing.ws_loark_content t2 	ON t1.lk_oid = t2.lk_oid 
+	 LEFT JOIN wing.ws_user_tb u1 			ON t1.sc_writer = u1.user_id_pk 
+	 	 WHERE 1=1
+	 	   AND t1.sc_oid = #{scOid}
 	</select>
 	
-	<insert id="insertNotice" parameterType="noticeVo">
-		INSERT /*+ SQL_ID: co.diro.wing.notice.mapper.NoticeMapper.insertNotice */
-		  INTO wing.ws_notice_tb
+	<select id="selectJoinScheduleListCount" resultType="int">
+		SELECT /*+ SQL_ID: co.diro.wing.main.mapper.MainMapper.selectSchedule */
+			   COUNT(*)
+		  FROM wing.ws_join_sc_user_tb j1
+	 	 WHERE 1=1
+	 	   AND j1.sc_oid = #{scOid}
+	</select>
+	
+	<select id="selectJoinScheduleList" resultType="scheduleVo" parameterType="scheduleVo">
+		SELECT /*+ SQL_ID: co.diro.wing.main.mapper.MainMapper.selectSchedule */
+			   j1.jo_oid
+			 , j1.jo_usr_condition
+			 , j1.jo_usr_class
+			 , u1.nickname			AS joNickname
+		  FROM wing.ws_join_sc_user_tb j1
+	 LEFT JOIN wing.ws_user_tb u1 			ON j1.user_id_pk = u1.user_id_pk 
+	 	 WHERE 1=1
+	 	   AND j1.sc_oid = #{scOid}
+	</select>
+	
+	<insert id="insertSchedule" parameterType="scheduleVo">
+		INSERT /*+ SQL_ID: co.diro.wing.main.mapper.MainMapper.insertSchedule */
+		  INTO wing.ws_schedule_tb
 		     (
-		       notice_title
-		     , notice_content
-		     , notice_cre_dt
-		     , notice_cre_usr_id
-		     , notice_id
+		       sc_title
+			 , sc_writer 
+			 , lk_oid 
+			 , sc_content
+			 , sc_cre_dt 
+			 , sc_start_dt 
+			 , sc_start_time 
+			 , sc_notice_sch 
 		     )
 		VALUES
 			 (
-			   #{noticeTitle}
-			 , #{noticeContent}
+			   #{scTitle}
+			 , #{scWriter}
+			 , #{lkOid}
+			 , #{scContent}
 			 , current_timestamp
-			 , #{noticeCreUsrId}
-			 , #{noticeId}
+			 , #{scStartDt}
+			 , #{scStartTime}
+			 , #{scNoticeSch}
 			 )
 	</insert>
 	
-	<update id="updateNotice" parameterType="noticeVo">
-		UPDATE /*+ SQL_ID: co.diro.wing.notice.mapper.NoticeMapper.updateNotice */
-		       wing.ws_notice_tb
+	<update id="updateSchedule" parameterType="scheduleVo">
+		UPDATE /*+ SQL_ID: co.diro.wing.main.mapper.MainMapper.updateSchedule */
+		       wing.ws_schedule_tb
 		     (
-		       notice_title
-		     , notice_content
-		     , notice_cre_dt
-		     , notice_cre_usr_id
-		     , notice_id
+		       sc_title
+			 , lk_oid 
+			 , sc_content
+			 , sc_start_dt 
+			 , sc_start_time 
+			 , sc_notice_sch 
 		     )
 		   SET
 			 (
-			   #{noticeTitle}
-			 , #{noticeContent}
-			 , current_timestamp
-			 , #{noticeCreUsrId}
-			 , #{noticeId}
+			   #{scTitle}
+			 , #{lkOid}
+			 , #{scContent}
+			 , #{scStartDt}
+			 , #{scStartTime}
+			 , #{scNoticeSch}
 			 )
 	</update>
 	
-	<delete id="deleteNotice" parameterType="noticeVo">
-		DELETE /*+ SQL_ID: co.diro.wing.notice.mapper.NoticeMapper.deleteNotice */
-		  FROM wing.ws_notice_tb
-		 WHERE notice_oid = #{noticeOid}
-		   AND notice_cre_usr_id = #{noticeCreUsrId}
+	<delete id="deleteSchedule" parameterType="scheduleVo">
+		DELETE /*+ SQL_ID: co.diro.wing.main.mapper.MainMapper.deleteSchedule */
+		  FROM wing.ws_schedule_tb
+		 WHERE sc_oid = #{scOid}
+		   AND sc_writer = #{scWriter}
 	</delete>
+	
+	<insert id="insertJoinSchedule" parameterType="scheduleVo">
+		INSERT /*+ SQL_ID: co.diro.wing.main.mapper.MainMapper.insertJoinSchedule */
+		  INTO wing.ws_join_sc_user_tb
+		     (
+		       jo_usr_class 
+			 , jo_usr_condition 
+			 , user_id_pk 
+			 , sc_oid 
+		     )
+		VALUES
+			 (
+			   #{joUsrClass}
+			 , #{joUsrCondition}
+			 , #{userIdPk}
+			 , #{scOid}
+			 )
+	</insert>
+	
+	<update id="updateJoinSchedule" parameterType="scheduleVo">
+		UPDATE /*+ SQL_ID: co.diro.wing.main.mapper.MainMapper.updateJoinSchedule */
+		       wing.ws_join_sc_user_tb
+		     (
+		       jo_usr_class 
+			 , jo_usr_condition 
+		     )
+		   SET
+			 (
+			   #{joUsrClass}
+			 , #{joUsrCondition}
+			 )
+	</update>
+	
+	<delete id="deleteJoinSchedule" parameterType="scheduleVo">
+		DELETE /*+ SQL_ID: co.diro.wing.main.mapper.MainMapper.deleteJoinSchedule */
+		  FROM wing.ws_join_sc_user_tb
+		 WHERE sc_oid = #{scOid}
+		   AND user_id_pk = #{userIdPk}
+		   AND jo_oid = #{joOid}
+	</delete>
+	
 	
 </mapper>
