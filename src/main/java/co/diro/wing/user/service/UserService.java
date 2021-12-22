@@ -6,12 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,11 +94,11 @@ public class UserService extends CommonComponent{
 	}
 	
 	@Transactional
-	public Object loginWingUser(UserVo userVo, HttpServletRequest request) {
-		HttpHeaders headers = new HttpHeaders();
+	public Object loginWingUser(UserVo userVo, HttpServletRequest request, HttpServletResponse response) {
+//		HttpHeaders headers = new HttpHeaders();
 		logger("[로그인] 서비스 시작");
 		Map<String, Object> resMap = new HashMap<>();
-		
+		ResponseCookie responseCookie = null;
 		try {
 			UserTokenVo loginUsers = new UserTokenVo();
 			logger("[로그인] 회원 확인");
@@ -105,15 +108,26 @@ public class UserService extends CommonComponent{
 				logger("[로그인] 토큰생성");
 //				UserVo loginUsers = userVo;
 				String token = jwtService.create("member", loginUsers, "user");
-				headers.add("Authorization", token);
+//				headers.add("Authorization", token);
 				
+				logger("[로그인] 쿠키생성 : "+token);
+				responseCookie = ResponseCookie.from("auth", token) 
+						.httpOnly(true)
+						.secure(true)
+						.path("/")
+						.maxAge(1 * 10 * 60 * 60)
+						.build();
 			}
 		} catch (Exception e) {
 			logger("[로그인] 실패/오류");
 			throw new GlobalException(e);
 		}
 		logger("[로그인] 서비스종료");
-		return makeResponseEntity2(resMap, headers, HttpStatus.OK);
+		
+		return ResponseEntity.ok()
+		.header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+		.body(resMap);
+//		return makeResponseEntity2(resMap, headers, HttpStatus.OK);
 	}
 	
 	@Transactional

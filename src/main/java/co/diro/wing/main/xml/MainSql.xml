@@ -11,7 +11,8 @@
 	
 	<select id="selectScheduleList" resultType="scheduleVo" >
 		SELECT /*+ SQL_ID: co.diro.wing.main.mapper.MainMapper.selectScheduleList */
-			   t1.sc_title
+			   t1.sc_oid
+			 , t1.sc_title
 			 , u1.nickname 		AS writerNickname
 			 , t1.sc_content
 			 , t1.sc_start_dt

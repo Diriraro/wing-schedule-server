@@ -49,14 +49,14 @@ public class MainService extends CommonComponent{
 		ScheduleVo scheduleVo = new ScheduleVo();
 		try {
 
-			logger("[스케줄 목록] 목록 카운트 조회");
-			int totalListSize = mainMapper.selectScheduleListCount(scheduleVo);
-			scheduleVo.setTotalListSize(totalListSize);
+//			logger("[스케줄 목록] 목록 카운트 조회");
+//			int totalListSize = mainMapper.selectScheduleListCount(scheduleVo);
+//			scheduleVo.setTotalListSize(totalListSize);
 			logger("[스케줄 목록] 목록 조회");
 			List<ScheduleVo> list = mainMapper.selectScheduleList(scheduleVo);
 			
 			resMap.put("list", list);
-			resMap.put("page", scheduleVo);
+//			resMap.put("page", scheduleVo);
 		} catch (Exception e) {
 			
 			logger("[스케줄 목록] 실패/오류");

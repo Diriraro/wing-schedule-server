@@ -3,6 +3,7 @@ package co.diro.wing.user.controller;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +53,8 @@ public class UserController {
 	 * @return
 	 */
 	@PostMapping("/wingService/wingUserLogin")
-	public Object loginWingUser(UserVo userVo, HttpServletRequest request) {
-		return userService.loginWingUser(userVo, request);
+	public Object loginWingUser(UserVo userVo, HttpServletRequest request, HttpServletResponse response) {
+		return userService.loginWingUser(userVo, request, response);
 	}
 	
 	/**

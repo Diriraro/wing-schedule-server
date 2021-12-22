@@ -1,8 +1,5 @@
 #common
 
-server:
-  port: 19490
-  
 spring:  application:    name: wing-schedule-server
   profiles:
     include:
@@ -14,8 +11,8 @@ usage:
 logging:
   level:
     org.springframework.cloud.config: error
-    org.springframework.web: error
-    ROOT: error
+    org.springframework.web: info
+    ROOT: info
 
 spring.main.allow-bean-definition-overriding: true
 
