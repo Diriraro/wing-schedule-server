@@ -82,6 +82,7 @@ public class GlobalExceptionHandler {
 		
 		if(status.getReasonPhrase().equals(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())){
 			code = 5000;
+			infoMessage = e.getMessage();
 		}else if(status.getReasonPhrase().equals(HttpStatus.UNAUTHORIZED.getReasonPhrase())){
 			code = 4001;
 			infoMessage = e.getMessage();
