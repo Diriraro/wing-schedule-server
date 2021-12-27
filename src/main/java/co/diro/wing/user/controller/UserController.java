@@ -35,7 +35,7 @@ public class UserController {
 	 * @return
 	 */
 	@GetMapping("/wingService/wingUserCheck")
-	public Object checkWingUser(HttpServletRequest request, UserVo userVo, @RequestParam HashMap<String, String> params) {
+	public Object checkWingUser(HttpServletRequest request, @RequestParam UserVo userVo,  HashMap<String, String> params) {
 		return userService.checkWingUser(userVo, params);
 	}
 	
@@ -44,7 +44,7 @@ public class UserController {
 	 * @return
 	 */
 	@PostMapping("/wingService/wingUserCreate")
-	public Object joinWingUser(UserVo userVo, HttpServletRequest request) {
+	public Object joinWingUser(@RequestBody UserVo userVo, HttpServletRequest request) {
 		return userService.joinWingUser(userVo, request);
 	}
 	
@@ -53,7 +53,7 @@ public class UserController {
 	 * @return
 	 */
 	@PostMapping("/wingService/wingUserLogin")
-	public Object loginWingUser(UserVo userVo, HttpServletRequest request, HttpServletResponse response) {
+	public Object loginWingUser(@RequestBody UserVo userVo, HttpServletRequest request, HttpServletResponse response) {
 		return userService.loginWingUser(userVo, request, response);
 	}
 	
@@ -62,7 +62,7 @@ public class UserController {
 	 * @return
 	 */
 	@PostMapping("/wingService/wingPreMemPush")
-	public Object pushPreMember(UserVo userVo, HttpServletRequest request) {
+	public Object pushPreMember(@RequestBody UserVo userVo, HttpServletRequest request) {
 		return userService.pushPreMember(userVo, request);
 	}
 	
