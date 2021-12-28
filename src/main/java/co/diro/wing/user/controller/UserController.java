@@ -35,8 +35,8 @@ public class UserController {
 	 * @return
 	 */
 	@GetMapping("/wingService/wingUserCheck")
-	public Object checkWingUser(HttpServletRequest request, @RequestParam UserVo userVo,  HashMap<String, String> params) {
-		return userService.checkWingUser(userVo, params);
+	public Object checkWingUser(HttpServletRequest request, @RequestParam HashMap<String, String> params) {
+		return userService.checkWingUser(params);
 	}
 	
 	/**

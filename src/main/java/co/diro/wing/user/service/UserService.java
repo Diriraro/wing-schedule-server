@@ -41,10 +41,11 @@ public class UserService extends CommonComponent{
 	private JwtService jwtService;
 	
 	@Transactional
-	public Object checkWingUser(UserVo userVo, HashMap<String, String> params) {
+	public Object checkWingUser(HashMap<String, String> params) {
 		logger("[가입체크] 서비스 시작");
 		Map<String, Object> resMap = new HashMap<>();
-		
+		UserVo userVo = new UserVo();
+		userVo.setNickname(params.get("nickname"));
 		if(userVo.getNickname() != null) {
 			try {
 
