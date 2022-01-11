@@ -78,7 +78,7 @@ public class GlobalExceptionHandler {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json;");
 		int code = 0;
-		String infoMessage = ""; // exception 메시지 는 보안 위배 문제 때문에 막음. 사용자 메시지만 사용.
+		String infoMessage = ""; // exception 메시지 는 보안 위배 문제 때문에 막음. 사용자 메시지만 사용. 실 서비스 시 메시지 막아야함
 		
 		if(status.getReasonPhrase().equals(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())){
 			code = 5000;
