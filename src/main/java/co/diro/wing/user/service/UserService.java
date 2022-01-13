@@ -118,6 +118,7 @@ public class UserService extends CommonComponent{
 						.path("/")
 						.maxAge(1 * 10 * 60 * 60)
 						.build();
+				resMap.put("nickname", loginUsers.getNickname());
 			}
 		} catch (Exception e) {
 			logger("[로그인] 실패/오류");
