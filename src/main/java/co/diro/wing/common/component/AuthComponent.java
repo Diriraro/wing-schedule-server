@@ -43,8 +43,6 @@ public class AuthComponent extends HttpComponent{
 	
 	/**
 	 * LoginUserInfo 에 저장된 로그인 사용자 정보를 가져와서 해당  Object ( VO extends CommonVO, Map ) 에 복사한다.
-	 * @Author		: heenim
-	 * @Date		: 2020. 4. 23. 
 	 * @param userInfo
 	 * @param obj
 	 */
@@ -87,8 +85,6 @@ public class AuthComponent extends HttpComponent{
 	
 	/**
 	 * Map 에 설정된 로그인 사용자 정보를 가져와서 해당 Object ( VO extends CommonVO, Map ) 에 복사한다.
-	 * @Author		: heenim
-	 * @Date		: 2020. 4. 23. 
 	 * @param map
 	 * @param obj
 	 */
@@ -118,8 +114,6 @@ public class AuthComponent extends HttpComponent{
 	
 	/**
 	 * Object (VO) 에 field 값을 설정.
-	 * @Author		: heenim
-	 * @Date		: 2020. 4. 23. 
 	 * @param obj
 	 * @param fieldName
 	 * @param value
